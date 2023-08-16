@@ -9,12 +9,14 @@ Original file is located at
 
 from operator import itemgetter
 import sys
+from collections import defaultdict
 
 current_word = None
 current_count = 0
 word = None
+unique_word_count = 0
+word_count = defaultdict(int)
 
-# input comes from STDIN
 for line in sys.stdin:
     # remove leading and trailing whitespace
     line = line.strip()
@@ -22,6 +24,7 @@ for line in sys.stdin:
 
     # parse the input we got from mapper.py
     word, count = line.split('\t', 1)
+    word_count[word] += int(count)
     try:
       count = int(count)
     except ValueError:
@@ -39,10 +42,25 @@ for line in sys.stdin:
             print ('%s\t%s' % (current_word, current_count))
         current_count = count
         current_word = word
+        unique_word_count += 1
 
 # do not forget to output the last word if needed!
 if current_word == word:
     print( '%s\t%s' % (current_word, current_count))
 
+# Print the total count of unique words
+print('Total unique words: %s' % (unique_word_count))
 
+sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)
 
+# Emit the top 10 words
+for word, count in sorted_words[:10]:
+    print('%s\t%s' % (word, count))
+
+histogram_bins = defaultdict(int)
+for word, frequency in word_count.items():
+    histogram_bins[min(10, frequency // 100)] += 1
+
+for bin, count in histogram_bins.items():
+    interval = f"I{bin} - {(bin + 1) * 100}"
+    print('%s\t%s' % (interval, count))
