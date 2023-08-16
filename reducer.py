@@ -60,7 +60,7 @@ for word, count in sorted_words[:10]:
 histogram_bins = defaultdict(int)
 for word, frequency in word_count.items():
     histogram_bins[min(10, frequency // 100)] += 1
-
+    
 for bin, count in histogram_bins.items():
-    interval = f"I{bin} - {(bin + 1) * 100}"
+    interval = 'I%s - %s' % (bin, ((bin + 1) * 100))
     print('%s\t%s' % (interval, count))
